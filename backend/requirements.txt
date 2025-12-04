@@ -1,1 +1,10 @@
-
+fastapi
+uvicorn
+pillow
+torch
+transformers
+sentence-transformers
+huggingface_hub
+python-multipart
+numpy
+faiss-cpu
