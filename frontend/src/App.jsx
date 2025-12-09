@@ -13,7 +13,7 @@ export default function App() {
     const formData = new FormData();
     formData.append("file", file);
 
-    const res = await axios.post(" paste link here/predict", formData, {
+    const res = await axios.post("https://huggingface.co/spaces/skneelofar/fruit-ai-backend/predict", formData, {
       headers: { "Content-Type": "multipart/form-data" },
     });
 
