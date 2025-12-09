@@ -13,7 +13,7 @@ export default function App() {
     const formData = new FormData();
     formData.append("file", file);
 
-    const res = await axios.post("http://localhost:8000/predict", formData, {
+    const res = await axios.post("https://universal-summarizer.onrender.com/predict", formData, {
       headers: { "Content-Type": "multipart/form-data" },
     });
 
