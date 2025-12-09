@@ -1,8 +1,0 @@
-services:
-  - type: web
-    name: universal-summarizer
-    env: python
-    rootDir: backend
-    buildCommand: pip install -r requirements.txt
-    startCommand: sh start.sh
-    plan: free
