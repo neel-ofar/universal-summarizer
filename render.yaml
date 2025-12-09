@@ -1,0 +1,7 @@
+services:
+  - type: web
+    name: fruit-ai-backend
+    env: python
+    buildCommand: pip install -r backend/requirements.txt
+    startCommand: sh backend/start.sh
+    plan: free
