@@ -1,14 +1,21 @@
-from fastapi import FastAPI, UploadFile
+from fastapi import FastAPI, UploadFile, File
 from PIL import Image
+
 from sam_segment import segment_fruit
 from dino_classifier import classify_fruit
 from rag_knowledge import retrieve_info
 from llm_explainer import explain_prediction
 
+import uvicorn
+
 app = FastAPI()
 
+@app.get("/")
+def home():
+    return {"msg": "Fruit AI backend running successfully on HuggingFace!"}
+
 @app.post("/predict")
-async def predict(file: UploadFile):
+async def predict(file: UploadFile = File(...)):
 
     # 1. Load Image
     img = Image.open(file.file).convert("RGB")
@@ -31,3 +38,10 @@ async def predict(file: UploadFile):
         "explanation": explanation
     }
 
+if __name__ == "__main__":
+    uvicorn.run(
+        "app:app",
+        host="0.0.0.0",
+        port=7860,
+        reload=False
+    )

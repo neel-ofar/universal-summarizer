@@ -8,3 +8,5 @@ huggingface_hub
 python-multipart
 numpy
 faiss-cpu
+scikit-learn
+requests
