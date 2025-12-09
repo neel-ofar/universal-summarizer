@@ -5,10 +5,19 @@ from sam_segment import segment_fruit
 from dino_classifier import classify_fruit
 from rag_knowledge import retrieve_info
 from llm_explainer import explain_prediction
+from fastapi.middleware.cors import CORSMiddleware
 
 import uvicorn
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.get("/")
 def home():
