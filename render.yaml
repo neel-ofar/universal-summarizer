@@ -1,7 +1,8 @@
 services:
   - type: web
-    name: fruit-ai-backend
+    name: universal-summarizer
     env: python
-    buildCommand: pip install -r backend/requirements.txt
-    startCommand: sh backend/start.sh
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: sh start.sh
     plan: free
