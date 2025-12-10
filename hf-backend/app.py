@@ -1,56 +1,38 @@
-from fastapi import FastAPI, UploadFile, File
+import gradio as gr
 from PIL import Image
 
 from sam_segment import segment_fruit
 from dino_classifier import classify_fruit
 from rag_knowledge import retrieve_info
 from llm_explainer import explain_prediction
-from fastapi.middleware.cors import CORSMiddleware
 
-import uvicorn
 
-app = FastAPI()
+def process(image):
+    # 1. Segment fruit
+    segmented = segment_fruit(image)
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
-@app.get("/")
-def home():
-    return {"msg": "Fruit AI backend running successfully on HuggingFace!"}
-
-@app.post("/predict")
-async def predict(file: UploadFile = File(...)):
-
-    # 1. Load Image
-    img = Image.open(file.file).convert("RGB")
-
-    # 2. Segment fruit
-    segmented = segment_fruit(img)
-
-    # 3. Classify fruit
+    # 2. Classify fruit
     fruit_name = classify_fruit(segmented)
 
-    # 4. Retrieve knowledge
+    # 3. Retrieve extra info
     info = retrieve_info(fruit_name)
 
-    # 5. Generate LLM explanation
+    # 4. LLM explanation
     explanation = explain_prediction(fruit_name, info)
 
-    return {
-        "fruit": fruit_name,
-        "info": info,
-        "explanation": explanation
-    }
+    return fruit_name, info, explanation
 
-if __name__ == "__main__":
-    uvicorn.run(
-        "app:app",
-        host="0.0.0.0",
-        port=7860,
-        reload=False
-    )
+
+demo = gr.Interface(
+    fn=process,
+    inputs=gr.Image(type="pil"),
+    outputs=[
+        gr.Text(label="Fruit"),
+        gr.Text(label="Information"),
+        gr.Text(label="Explanation")
+    ],
+    title="Fruit AI Backend",
+    description="Upload an image of a fruit to classify & get explanation."
+)
+
+demo.launch()
