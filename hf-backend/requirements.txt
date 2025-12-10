@@ -9,3 +9,4 @@ opencv-python
 requests
 numpy
 scikit-learn
+python-dotenv

@@ -1,22 +1,27 @@
-from transformers import AutoTokenizer, AutoModelForCausalLM
+import requests
+import os
 
-tokenizer = AutoTokenizer.from_pretrained("mistral-7b-instruct")
-model = AutoModelForCausalLM.from_pretrained("mistral-7b-instruct")
+# Read token from environment variable
+HF_TOKEN = os.getenv("HF_TOKEN")
+
+API_URL = "https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.2"
 
 def explain_prediction(fruit, info):
     prompt = f"""
-Explain why this image was predicted as {fruit}.
-Give a friendly, clear explanation based on color, shape, and common characteristics.
+    Explain the following fruit in a simple, friendly way:
 
-Also summarize:
-- Nutrition
-- Health Benefits
-- How to tell if it's ripe
-{info}
-"""
+    Fruit: {fruit}
+    Info: {info}
 
-    inputs = tokenizer(prompt, return_tensors="pt")
-    outputs = model.generate(**inputs, max_new_tokens=150)
-    text = tokenizer.decode(outputs[0], skip_special_tokens=True)
-    return text
+    Provide a short, student-friendly explanation (3–4 lines).
+    """
 
+    headers = {"Authorization": f"Bearer {HF_TOKEN}"}
+    payload = {"inputs": prompt}
+
+    response = requests.post(API_URL, headers=headers, json=payload)
+
+    try:
+        return response.json()[0]["generated_text"]
+    except:
+        return "The model was unable to generate an explanation at this time."
